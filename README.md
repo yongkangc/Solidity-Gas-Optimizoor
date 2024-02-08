@@ -74,3 +74,17 @@ To optimize gas usage, developers and users employ various techniques such as mi
 - Strongly Typed
 - Just for fun
 
+## Resources
+Gas
+https://www.rareskills.io/post/gas-optimization
+https://github.com/ROOTBABU/solidity-gas-optimization-handbook
+https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions
+
+compilers
+https://medium.com/coinmonks/solidity-compiler-and-llvm-optimizations-3a148a6dbd91
+
+Solidity library generator for compact struct encoding on the stack.
+https://github.com/d1ll0n/stack-packer
+
+Go library for struct packing
+https://github.com/RensR/Spack
