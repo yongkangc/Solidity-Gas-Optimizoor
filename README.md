@@ -87,6 +87,7 @@ Gas
 https://www.rareskills.io/post/gas-optimization
 https://github.com/ROOTBABU/solidity-gas-optimization-handbook
 https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions
+https://github.com/0xisk/awesome-solidity-gas-optimization
 
 compilers
 https://medium.com/coinmonks/solidity-compiler-and-llvm-optimizations-3a148a6dbd91
