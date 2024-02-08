@@ -94,5 +94,6 @@ https://medium.com/coinmonks/solidity-compiler-and-llvm-optimizations-3a148a6dbd
 Solidity library generator for compact struct encoding on the stack.
 https://github.com/d1ll0n/stack-packer
 
-Go library for struct packing
+Libraries for optimisations
 https://github.com/RensR/Spack
+https://github.com/ShyftNetwork/shyft_tetrix
