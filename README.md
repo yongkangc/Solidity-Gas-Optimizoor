@@ -19,7 +19,8 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 	- When calling a function, the EVM jumps through the list of function selectors until it finds a match. The function selectors are ordered in hexadecimal order and each jump costs 22 gas. If you have a lot of functions, you can save gas by ordering them in a way that the most commonly called functions are at the top.
 
 ## Delivables of the project
-Core Deliverables:**
+
+Core Deliverables:
     - A **Rust-based CLI tool** that can be run on various operating systems.
     - **Source code analysis** and **optimization algorithms** that 
 	    - apply tight variable packing and efficient data type usage.
