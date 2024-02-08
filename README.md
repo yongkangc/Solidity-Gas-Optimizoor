@@ -1,6 +1,12 @@
 # Solidity-Gas-Optimizoor
 An automated CLI tool that optimizes gas usage in Solidity smart contracts, focusing on storage and function call efficiency. 
 
+Problem Statement:
+Solidity developers need tools to help them write gas-efficient code to minimize the execution cost of smart contracts on the blockchain. While there are some linters and optimizers available, there's a lack of tools specifically designed to analyze and suggest optimizations at both the source code and intermediate representation levels.
+
+Project Objective:
+The goal of this project is to design and implement a Rust-based tool that analyzes Solidity smart contracts, identifies patterns that lead to high gas usage, and suggests or automatically applies optimizations to improve gas efficiency.
+
 ## How does our tool optimize the gas of your smart contracts?
 Automated Rust-based CLI tool that optimizes gas of solidity code by 
 - struct packing
