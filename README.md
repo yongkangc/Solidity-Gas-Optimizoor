@@ -11,7 +11,7 @@ The goal of this project is to design and implement a Rust-based tool that analy
 
 ## How does our tool optimize the gas of your smart contracts?
 Automated Rust-based CLI tool that optimizes gas of solidity code by 
-- struct packing
+- [struct packing](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#storage-packing)
 	- We can save storage by ordering variables that use less than 32 bytes next to each other.
 	- Storage packing is particularly useful when reading or writing multiple values in the same storage slot. In such cases, only a single SLOAD or SSTORE operation is needed, significantly reducing the cost of accessing storage variables by half or more. This situation commonly occurs with structs:
 	- parses Solidity structs and packs the fields efficiently to reduce the number of storage slots they use. It also adds struct packing comments to clearly indicate how the fields are packed.
