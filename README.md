@@ -96,7 +96,7 @@ https://github.com/0xisk/awesome-solidity-gas-optimization
 
 https://medium.com/coinmonks/solidity-compiler-and-llvm-optimizations-3a148a6dbd91
 
-**Solidity library generator for compact struct encoding on the stack **
+**Solidity library generator for compact struct encoding on the stack**
 
 https://github.com/d1ll0n/stack-packer
 
