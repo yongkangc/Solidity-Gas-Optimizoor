@@ -2,6 +2,8 @@
 
 An automated CLI tool that optimizes gas usage in Solidity smart contracts, focusing on storage and function call efficiency.
 
+For more information, see the [research section](research.md)
+
 **Problem Statement:**
 
 Solidity developers need tools to help them write gas-efficient code to minimize the execution cost of smart contracts on the blockchain. While there are some linters and optimizers available, there's a lack of tools specifically designed to analyze and suggest optimizations at both the source code and intermediate representation levels.
@@ -45,65 +47,3 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 - **Dry-run mode** that outputs potential optimizations without altering the original code, for manual review.
 - **Smart contract metrics dashboard** that visualizes gas usage before and after optimizations.
 
-## Domain Knowledge
-
-### What are smart contracts? What is solidity?
-
-Smart contracts are self-executing contracts with the terms of the agreement between buyer and seller being directly written into lines of code. These contracts are stored on a blockchain and automatically enforce the terms of the agreement. Solidity is the primary programming language used for developing smart contracts on the Ethereum blockchain. It is an object-oriented, high-level language designed to target the Ethereum Virtual Machine (EVM) and is influenced by C++, Python, and JavaScript.
-
-Solidity is used to write programs that govern the behavior of accounts within the Ethereum state. It supports features such as inheritance, libraries, and complex user-defined types. Smart contracts, on the other hand, are programs that automate processes and govern the behavior of accounts within the Ethereum state.
-
-EVM Blockchain includes Ethereum, Polygon, Avalanche, Mantle ...
-
-### What is gas and why is optimising gas necessary for blockchain?
-
-Gas in the context of blockchain, particularly Ethereum, refers to the "fuel" that powers smart contract execution and transactions. It is a unit that measures the amount of computational effort required to perform operations on the blockchain network.
-
-Gas is necessary for several reasons:
-
-1. Preventing infinite computations: Gas ensures that computations on the blockchain are not infinite and can be completed within a reasonable amount of time. Without gas, malicious actors could create smart contracts or transactions that run forever, potentially causing the network to grind to a halt.
-
-2. Mitigating spam and abuse: By requiring users to pay for gas, the blockchain network discourages spamming and abuse. Users need to spend a certain amount of cryptocurrency (Ether in the case of Ethereum) to execute actions on the network. This economic cost helps prevent malicious actors from overwhelming the network with frivolous or malicious transactions.
-
-3. Resource allocation: Gas plays a role in resource allocation on the blockchain. Miners or validators prioritize transactions with higher gas fees because they earn those fees as a reward for including transactions in a block. This mechanism incentivizes users to set appropriate gas fees and helps allocate network resources efficiently.
-
-Gas optimization is necessary for several reasons:
-
-1. Cost reduction: Optimizing gas usage helps reduce the cost of executing smart contracts and transactions. Gas fees are paid in cryptocurrency, so minimizing gas consumption can make blockchain interactions more affordable for users.
-
-2. Efficiency: Gas optimization improves the efficiency of blockchain networks. By reducing the amount of computational effort required for operations, transactions can be processed more quickly, and smart contracts can execute more efficiently.
-
-3. Scalability: Gas optimization is crucial for scalability. By minimizing gas consumption, more transactions can be processed within a given block limit, leading to increased network throughput and improved scalability.
-
-4. Enhanced user experience: Gas optimization can improve the user experience by reducing wait times and costs associated with executing transactions. It enables smoother and more cost-effective interactions with the blockchain.
-
-To optimize gas usage, developers and users employ various techniques such as minimizing on-chain data, reducing complex computations, limiting external calls, using memory efficiently, applying looping carefully, implementing lazy evaluation, and optimizing data structures. These techniques help reduce gas consumption, improve efficiency, and make blockchain networks more scalable and cost-effective.
-
-### Why Rust?
-
-- Blazing Fast
-- Strongly Typed
-- Just for fun
-
-## Resources
-
-**Gas**
-
-https://www.rareskills.io/post/gas-optimization
-https://github.com/ROOTBABU/solidity-gas-optimization-handbook
-https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions
-https://github.com/0xisk/awesome-solidity-gas-optimization
-https://github.com/0xisk/awesome-solidity-gas-optimization
-
-**compilers**
-
-https://medium.com/coinmonks/solidity-compiler-and-llvm-optimizations-3a148a6dbd91
-
-**Solidity library generator for compact struct encoding on the stack**
-
-https://github.com/d1ll0n/stack-packer
-
-**Libraries for optimisations**
-
-https://github.com/RensR/Spack
-https://github.com/ShyftNetwork/shyft_tetrix
