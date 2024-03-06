@@ -93,21 +93,30 @@ Implementation:
 
 - **Reference**: https://www.rareskills.io/post/gas-optimization#viewer-8lubg
 
-#### Tight Variable Packing
 
-- **Overview**: Gas costs can be reduced by using smaller data types (like `bytes16`, `uint32`) to enable the EVM to pack these variables tightly into a single 32-byte storage slot.
-- **Note**: This optimization, known as "tight packing", is not automatically performed by the Solidity optimizer as of the last update.
-- **Reference**: [Tight Variable Packing](https://fravoll.github.io/solidity-patterns/tight_variable_packing.html)
+#### Calldata Optimization
+
+- **Cost Efficiency**: Calldata is less expensive than memory, so for external functions where the input argument remains unmodified, using calldata can be more gas-efficient.
+- **Reference**: [Calldata Optimization on GitHub](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions)
+
+- Implementation
+  - If input arg has `memory`, we check function body to see if variable has writes.
+  - If there is no write, change it to `calldata`
+
+---
 
 #### Fixed Size vs. Dynamic Size Variables
 
 - **Best Practice**: Use fixed size variables (`bytes1` to `bytes32`) over dynamic ones (`bytes`, `string`) when the size can be predetermined, as they consume less gas.
 - **Arrays**: Opt for fixed-size arrays instead of dynamic arrays if you know the maximum number of elements, to save a storage slot otherwise used for the length parameter.
 
-#### Calldata Optimization
+**Not implemented in the project, but possible future works:**
 
-- **Cost Efficiency**: Calldata is less expensive than memory, so for external functions where the input argument remains unmodified, using calldata can be more gas-efficient.
-- **Reference**: [Calldata Optimization on GitHub](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions)
+#### Tight Variable Packing
+
+- **Overview**: Gas costs can be reduced by using smaller data types (like `bytes16`, `uint32`) to enable the EVM to pack these variables tightly into a single 32-byte storage slot.
+- **Note**: This optimization, known as "tight packing", is not automatically performed by the Solidity optimizer as of the last update.
+- **Reference**: [Tight Variable Packing](https://fravoll.github.io/solidity-patterns/tight_variable_packing.html)
 
 #### Function Ordering
 
@@ -115,10 +124,6 @@ Implementation:
 - **Optimization Tip**: Reorder functions so that the most frequently called ones come first, reducing the average cost of function lookups.
 
 By applying these strategies, smart contract developers can write more gas-efficient code, reducing the overall cost of deploying and interacting with contracts on the Ethereum network.
-
----
-
-**Not implemented in the project, but possible future works:**
 
 #### Using Multiplication over Exponetentiation: MUL vs EXP
 
