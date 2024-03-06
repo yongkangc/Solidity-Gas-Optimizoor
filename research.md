@@ -86,6 +86,13 @@ Functionality
 - **Implementation**: A tool or script can be used to analyze Solidity struct definitions and reorder the fields to minimize storage slots. It will keep comments and whitespace intact and handle unknown types as `bytes32`.
 - **Reference**: [Struct Packing on GitHub](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#storage-packing)
 
+#### Storage Variable Caching
+
+Implementation:
+- If there are more than 2 calls to global storage variable, we would declare a temp local variable as the cached value
+
+- **Reference**: https://www.rareskills.io/post/gas-optimization#viewer-8lubg
+
 #### Tight Variable Packing
 
 - **Overview**: Gas costs can be reduced by using smaller data types (like `bytes16`, `uint32`) to enable the EVM to pack these variables tightly into a single 32-byte storage slot.
