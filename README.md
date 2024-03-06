@@ -49,3 +49,17 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 - **Dry-run mode** that outputs potential optimizations without altering the original code, for manual review.
 - **Smart contract metrics dashboard** that visualizes gas usage before and after optimizations.
 
+## Roadmap
+
+### Week 8:
+- [ ]  Start on lexer and parser
+    - look at the optimisations u need to do and look at the tokens we neeed
+        - struct packing
+            - struct, parathesis, variable name, type identifier
+        - storage cache
+            - identifying read and write
+                - what can trigger a read / write
+            - function
+            - limit it to value types only
+                - start with integer
+                    - we can start with value types (pass by value)
