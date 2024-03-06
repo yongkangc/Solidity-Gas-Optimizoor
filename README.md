@@ -26,6 +26,8 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 - Fixed size variables are cheaper than dynamic size variables - As a general rule, use bytes for arbitrary-length raw byte data and string for arbitrary-length string (UTF-8) data. If you can limit the length to a certain number of bytes, always use one of the value types (bytes1 to bytes32) because they are much cheaper. - The same applies for arrays: If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter in storage and thus saves one storage slot. -[ Calldata instead of memory for external functions](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions) - Calldata is cheaper than memory. If the input argument does not need to be modified, consider using calldata in external functions
 - Function order matters
   - When calling a function, the EVM jumps through the list of function selectors until it finds a match. The function selectors are ordered in hexadecimal order and each jump costs 22 gas. If you have a lot of functions, you can save gas by ordering them in a way that the most commonly called functions are at the top.
+- [Caching Storage Variable](https://www.rareskills.io/post/gas-optimization#viewer-8lubg)
+  - Cache   
 
 ## Delivables of the project
 
