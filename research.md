@@ -70,6 +70,9 @@ Functionality:
 
 ```
 
+#### Optimiser 
+Functionality
+
 ## Deep Dive into Solidity
 
 ### How does Solidity compile into EVM Bytecode?
