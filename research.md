@@ -1,48 +1,5 @@
 # Research On Implementation
 
-## Possible Approaches
-
-### Static Analysis
-
-- Can we build a static analysis tool for gas?
-
-Some existing tools:
-
-- [A Security Analysis Tool for Smart Contract Out-of-Gas Vulnerabilities](https://gasgauge.github.io)
-- [GaSaver: A Static Analysis Tool for Saving Gas](https://ieeexplore.ieee.org/document/9946440)
-
-#### Implementation of Static Analysis
-
-1. Lexical Analysis
-
-- Lexer breaks source code into a sequence of tokens.
-- Tokens represent the smallest unit of meaning in a programming language, such as keywords, identifiers, operators, and literals.
-
-2. Parser
-
-- A parser takes the sequence of tokens produced by the lexer and constructs a AST (Abstract Syntax Tree), which represents the syntactic structure of the source code.
-- The most important keyword here is standardized, which is one of the main characteristics an AST should respect to be useful. As the AST is an intermediary data structure, the overall goal is to be able to transform the tree to anything we want for example transform the tree to produce a program in an entirely new language e.g. generating JavaScript from Scala or most commonly JavaScript from TypeScript, etc 😎
-- This standardized format has the advantage of allowing any type of Parser (written using any programming language) to produce a common AST (following the ESTree spec) that can be then interpreted by any Interpreter (written in any language).
-
-![Alt text](image.png)
-
-3. Semantic Analysis
-
-- The semantic analysis phase checks the AST for semantic errors and gathers information about the program that is not readily available from the syntax alone.
-
-4. Data Flow Analysis
-
-- Data flow analysis is a technique used to gather information about the possible set of values calculated at various points in a computer program.
-- Another useful lint which can be applied at this level is cyclomatic complexity, i.e. how "complex" a function/procedure is. This is normally just a case of walking the body of a function and counting the number of branches, loops, and try/catch blocks encountered.
-
-![Alt text](image-1.png)
-
-#### Existing Tools for Static Analysis in Solidity
-
-### Solidity Source Code Analysis
-
-- How can we parse Solidity source code?
-
 ## Design of project
 
 - Each component of the project - parser, gas optimization algorithms should be designed as a separate modules. This allows for other developers to use the parser or the gas optimization algorithms in their own projects.
@@ -61,8 +18,24 @@ Some existing tools:
 
 Functionality:
 
+- Lexer is the component that takes raw input text and converts it into a stream of tokens. Tokens are the basic building blocks of a language's syntax, such as keywords, identifiers, literals, operators, and punctuation symbols.
+
+To handle struct packing and calldata optimizations, Lexer should recognize and generate tokens for:
+
+- Data type declarations (e.g., uint, address, struct)
+- Storage qualifiers (e.g., memory, calldata, storage)
+- Function definitions and parameters
+- Variable declarations and assignments
+- Comments and whitespace (to keep intact)
+
+Implementation:
+
 - turn strings into `Token` objects. `Token` objects consist of a `TokenKind` and a `Span` which represents the start and end of the token in the source code.
 - `TokenKind` enum to represent the different types of tokens
+
+Libraries:
+
+- [Logos Derive](https://crates.io/crates/logos-derive)
 
 ##### TokenKind
 
@@ -70,7 +43,12 @@ Functionality:
 
 ```
 
-#### Optimiser 
+#### Optimiser
+
+#### Printer
+
+- Prints out the optimised Solidity code
+
 Functionality
 
 ## Deep Dive into Solidity
@@ -89,10 +67,10 @@ Functionality
 #### Storage Variable Caching
 
 Implementation:
+
 - If there are more than 2 calls to global storage variable, we would declare a temp local variable as the cached value
 
 - **Reference**: https://www.rareskills.io/post/gas-optimization#viewer-8lubg
-
 
 #### Calldata Optimization
 
@@ -211,6 +189,49 @@ contract StorageExample {
   - Reducing `SSTORE` operations to just one, at the end of the function.
 
 With an array of only 10 integers, `efficientSum` can save more than 50% of the gas costs compared to `inefficientSum`. As the size of the array grows, the savings become even more pronounced. This is because the cost of `SLOAD` operations would remain the same regardless of the array size, but the cost of `SSTORE` operations would increase linearly with the number of iterations in `inefficientSum`.
+
+## Possible Approaches
+
+### Static Analysis
+
+- Can we build a static analysis tool for gas?
+
+Some existing tools:
+
+- [A Security Analysis Tool for Smart Contract Out-of-Gas Vulnerabilities](https://gasgauge.github.io)
+- [GaSaver: A Static Analysis Tool for Saving Gas](https://ieeexplore.ieee.org/document/9946440)
+
+#### Implementation of Static Analysis
+
+1. Lexical Analysis
+
+- Lexer breaks source code into a sequence of tokens.
+- Tokens represent the smallest unit of meaning in a programming language, such as keywords, identifiers, operators, and literals.
+
+2. Parser
+
+- A parser takes the sequence of tokens produced by the lexer and constructs a AST (Abstract Syntax Tree), which represents the syntactic structure of the source code.
+- The most important keyword here is standardized, which is one of the main characteristics an AST should respect to be useful. As the AST is an intermediary data structure, the overall goal is to be able to transform the tree to anything we want for example transform the tree to produce a program in an entirely new language e.g. generating JavaScript from Scala or most commonly JavaScript from TypeScript, etc 😎
+- This standardized format has the advantage of allowing any type of Parser (written using any programming language) to produce a common AST (following the ESTree spec) that can be then interpreted by any Interpreter (written in any language).
+
+![Alt text](image.png)
+
+3. Semantic Analysis
+
+- The semantic analysis phase checks the AST for semantic errors and gathers information about the program that is not readily available from the syntax alone.
+
+4. Data Flow Analysis
+
+- Data flow analysis is a technique used to gather information about the possible set of values calculated at various points in a computer program.
+- Another useful lint which can be applied at this level is cyclomatic complexity, i.e. how "complex" a function/procedure is. This is normally just a case of walking the body of a function and counting the number of branches, loops, and try/catch blocks encountered.
+
+![Alt text](image-1.png)
+
+#### Existing Tools for Static Analysis in Solidity
+
+### Solidity Source Code Analysis
+
+- How can we parse Solidity source code?
 
 ## Domain Knowledge
 

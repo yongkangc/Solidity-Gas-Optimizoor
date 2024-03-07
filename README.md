@@ -1,6 +1,6 @@
 # Solidity-Gas-Optimizoor
 
-An automated CLI tool that optimizes gas usage in Solidity smart contracts, focusing on storage and function call efficiency.
+An high performance automated CLI tool that optimizes gas usage in Solidity smart contracts, focusing on storage and function call efficiency.
 
 For more information, see the [research section](research.md)
 
@@ -27,7 +27,7 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 - Function order matters
   - When calling a function, the EVM jumps through the list of function selectors until it finds a match. The function selectors are ordered in hexadecimal order and each jump costs 22 gas. If you have a lot of functions, you can save gas by ordering them in a way that the most commonly called functions are at the top.
 - [Caching Storage Variable](https://www.rareskills.io/post/gas-optimization#viewer-8lubg)
-  - Cache   
+  - Cache
 
 ## Delivables of the project
 
@@ -52,14 +52,15 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 ## Roadmap
 
 ### Week 8:
-- [ ]  Start on lexer and parser
-    - look at the optimisations u need to do and look at the tokens we neeed
-        - struct packing
-            - struct, parathesis, variable name, type identifier
-        - storage cache
-            - identifying read and write
-                - what can trigger a read / write
-            - function
-            - limit it to value types only
-                - start with integer
-                    - we can start with value types (pass by value)
+
+- [ ] Start on lexer and parser
+  - look at the optimisations u need to do and look at the tokens we neeed
+    - struct packing
+      - struct, parathesis, variable name, type identifier
+    - storage cache
+      - identifying read and write
+        - what can trigger a read / write
+      - function
+      - limit it to value types only
+        - start with integer
+          - we can start with value types (pass by value)
