@@ -1,6 +1,64 @@
 extern crate logos;
 
 use crate::lexer::token::Token;
+pub use logos::{lookup, Logos};
+pub type Lexer<S> = logos::Lexer<Token, S>;
+
+/// Tokenizes the given solidity source code.
+/// Entry point for the lexer.
+fn tokenize(source: &str) -> Vec<Token> {
+    let mut lex = Token::lexer(source);
+    let mut tokens = Vec::new();
+
+    while lex.token != Token::EndOfProgram {
+        tokens.push(lex.token);
+        lex.advance();
+    }
+
+    tokens
+}
+
+/// Extracts the pragma version from the given source code.
+pub fn read_pragma<'source, S: logos::Source<'source>>(lex: &mut Lexer<S>) -> S::Slice {
+    use logos::internal::LexerInternal;
+
+    loop {
+        match lex.read() {
+            0x01..=0x20 => lex.bump(),
+            _ => break,
+        }
+    }
+
+    let start = lex.range().start;
+
+    loop {
+        match lex.read() {
+            0 => {
+                lex.token = Token::UnexpectedEndOfProgram;
+                let end = lex.range().end;
+
+                return lex
+                    .source
+                    .slice(start..end)
+                    .expect("0 guarantees being at the end; qed");
+            }
+            b';' => {
+                let end = lex.range().end;
+
+                let version = lex
+                    .source
+                    .slice(start..end)
+                    .expect("Still within bounds; qed");
+
+                lex.token = Token::Semicolon;
+                lex.bump();
+
+                return version;
+            }
+            _ => lex.bump(),
+        }
+    }
+}
 
 #[cfg(test)]
 mod test {
