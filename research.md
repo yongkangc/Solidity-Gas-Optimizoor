@@ -5,25 +5,9 @@
 - Each component of the project - parser, gas optimization algorithms should be designed as a separate modules. This allows for other developers to use the parser or the gas optimization algorithms in their own projects.
 - Using comments for rustdoc
 
-
-
 Libraries:
 
 - [Logos Derive](https://crates.io/crates/logos-derive)
-
-##### TokenKind
-
-```rust
-
-```
-
-#### Optimiser
-
-#### Printer
-
-- Prints out the optimised Solidity code
-
-Functionality
 
 ## Deep Dive into Solidity
 
