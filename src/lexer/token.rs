@@ -437,7 +437,7 @@ pub enum Token {
 
     #[regex = "//[^\n]*"]
     #[token = "/*"]
-    // #[callback = "ignore_comments"] # TODO: Find a better way to manage comments, as we might still want it? 
+    #[callback = "ignore_comments"] // # TODO: Find a better way to manage comments, as we might still want it?
     #[error]
     UnexpectedToken,
     UnexpectedEndOfProgram,
