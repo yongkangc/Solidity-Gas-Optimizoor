@@ -17,6 +17,8 @@
 //!  ```
 //!
 
+use core::fmt;
+
 use logos::{Extras, Lexer, Logos, Slice, Source};
 
 /// If the current token is an elementary type,
@@ -36,6 +38,12 @@ impl Extras for TypeSize {}
 #[derive(Debug, PartialEq, Clone, Copy, Logos)]
 #[extras = "TypeSize"]
 pub enum Token {
+    #[token = " "]
+    Whitespace,
+
+    #[token = "\n"]
+    Newline,
+
     #[end]
     EndOfProgram,
 
@@ -77,8 +85,17 @@ pub enum Token {
 
     #[regex = "block|msg|tx|now|suicide|selfdestruct|addmod"]
     #[regex = "mulmod|sha3|keccak256|log0|log1|log2|log3|log4"]
-    #[regex = "sha256|ecrecover|ripemd160|assert|revert|require"]
+    #[regex = "sha256|ecrecover|ripemd160"]
     IdentifierBuiltin,
+
+    #[regex = "require"]
+    REQUIRE,
+
+    #[regex = "assert"]
+    ASSERT,
+
+    #[regex = "revert"]
+    REVERT,
 
     #[token = "contract"]
     DeclarationContract,
@@ -420,11 +437,43 @@ pub enum Token {
 
     #[regex = "//[^\n]*"]
     #[token = "/*"]
-    #[callback = "ignore_comments"]
+    // #[callback = "ignore_comments"] # TODO: Find a better way to manage comments, as we might still want it? 
     #[error]
     UnexpectedToken,
     UnexpectedEndOfProgram,
 }
+
+// Custom Trait for displaying source code from tokens
+pub trait DisplayToken {
+    fn display(&self) -> String;
+}
+
+// // Implement DisplayToken for Token
+// impl DisplayToken for Token {
+//     fn display(&self) -> String {
+//         match self {
+//             Token::EndOfProgram => "EOF".to_string(),
+//             Token::Semicolon => ";".to_string(),
+//             Token::Colon => ":".to_string(),
+//             Token::Comma => ",".to_string(),
+//             Token::Accessor => ".".to_string(),
+//             Token::ParenOpen => "(".to_string(),
+//             Token::ParenClose => ")".to_string(),
+//             Token::BraceOpen => "{".to_string(),
+//             Token::BraceClose => "}".to_string(),
+//             Token::BracketOpen => "[".to_string(),
+//             Token::BracketClose => "]".to_string(),
+//             Token::Arrow => "=>".to_string(),
+//             Token::Identifier => "IDENT".to_string(), // this is a placeholder
+//             Token::IdentifierBuiltin => "BLTIN".to_string(),
+//             Token::REQUIRE => "require".to_string(),
+//             Token::ASSERT => "assert".to_string(),
+//             Token::REVERT => "revert".to_string(),
+//             Token::DeclarationContract => "contract".to_string(),
+//             Token::DeclarationLibrary => "library".to_string(),
+//         }
+//     }
+// }
 
 fn ignore_comments<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     use logos::internal::LexerInternal;

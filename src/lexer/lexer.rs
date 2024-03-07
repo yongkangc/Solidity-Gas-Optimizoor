@@ -1,21 +1,32 @@
 extern crate logos;
 
 use crate::lexer::token::Token;
-pub use logos::{lookup, Logos};
+pub use logos::Logos;
 pub type Lexer<S> = logos::Lexer<Token, S>;
 
-/// Tokenizes the given solidity source code.
+pub struct LexedOutput {
+    pub tokens: Vec<Token>,
+    pub slices: Vec<String>, // Now we're storing owned data, which is fine.
+}
+/// Tokenizes the given Solidity source code.
 /// Entry point for the lexer.
-fn tokenize(source: &str) -> Vec<Token> {
-    let mut lex = Token::lexer(source);
+pub fn tokenize(source: &str) -> LexedOutput {
+    let mut lexer = Token::lexer(source);
     let mut tokens = Vec::new();
+    let mut slices = Vec::new();
 
-    while lex.token != Token::EndOfProgram {
-        tokens.push(lex.token);
-        lex.advance();
+    while lexer.token != Token::EndOfProgram {
+        tokens.push(lexer.token);
+        if lexer.slice() == "" && lexer.range() != (0..0) {
+            // Whitespace
+            let whitespace = " ".repeat(lexer.range().end - lexer.range().start);
+            slices.push(whitespace);
+        }
+        slices.push(lexer.slice().to_owned()); // Convert to owned String.
+        lexer.advance();
     }
 
-    tokens
+    LexedOutput { tokens, slices }
 }
 
 /// Extracts the pragma version from the given source code.
