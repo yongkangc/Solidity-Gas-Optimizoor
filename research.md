@@ -5,33 +5,7 @@
 - Each component of the project - parser, gas optimization algorithms should be designed as a separate modules. This allows for other developers to use the parser or the gas optimization algorithms in their own projects.
 - Using comments for rustdoc
 
-```rust
 
-//! Module for performing lexical analysis on source code.
-```
-
-### Overall Architecture
-
-![Architecture](image-2.png)
-
-#### Lexer
-
-Functionality:
-
-- Lexer is the component that takes raw input text and converts it into a stream of tokens. Tokens are the basic building blocks of a language's syntax, such as keywords, identifiers, literals, operators, and punctuation symbols.
-
-To handle struct packing and calldata optimizations, Lexer should recognize and generate tokens for:
-
-- Data type declarations (e.g., uint, address, struct)
-- Storage qualifiers (e.g., memory, calldata, storage)
-- Function definitions and parameters
-- Variable declarations and assignments
-- Comments and whitespace (to keep intact)
-
-Implementation:
-
-- turn strings into `Token` objects. `Token` objects consist of a `TokenKind` and a `Span` which represents the start and end of the token in the source code.
-- `TokenKind` enum to represent the different types of tokens
 
 Libraries:
 

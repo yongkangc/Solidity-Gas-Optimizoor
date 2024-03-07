@@ -2,7 +2,7 @@
 
 An high performance automated CLI tool that optimizes gas usage in Solidity smart contracts, focusing on storage and function call efficiency.
 
-For more information, see the [research section](research.md)
+For more information on architecture and implementation, see the [docs](docs.md)
 
 **Problem Statement:**
 
@@ -14,20 +14,26 @@ The goal of this project is to design and implement a Rust-based tool that analy
 
 ## How does our tool optimize the gas of your smart contracts?
 
-Automated Rust-based CLI tool that optimizes gas of solidity code by
+### Structured Data Packing
 
-- [struct packing](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#storage-packing)
-  - We can save storage by ordering variables that use less than 32 bytes next to each other.
-  - Storage packing is particularly useful when reading or writing multiple values in the same storage slot. In such cases, only a single SLOAD or SSTORE operation is needed, significantly reducing the cost of accessing storage variables by half or more. This situation commonly occurs with structs:
-  - parses Solidity structs and packs the fields efficiently to reduce the number of storage slots they use. It also adds struct packing comments to clearly indicate how the fields are packed.
-  - It can deal with comments and whitespace in the struct definition, and will preserve them in the output. It handles unknown types by assuming they cannot be packed, treating they as `bytes32`.
-- [tight packing](https://fravoll.github.io/solidity-patterns/tight_variable_packing.html)
-  - Save gas by using smaller data types (e.g. `bytes16`, `uint32`) when possible, as the EVM can then pack them together in one single 32 byte slot and therefore use less storage. Gas is then saved because the EVM can combine multiple reads or writes into one single operation. The underlying behavior is also referred to as “tight packing” and is unfortunately, until the time of writing, not automatically achieved by the optimizer.
-- Fixed size variables are cheaper than dynamic size variables - As a general rule, use bytes for arbitrary-length raw byte data and string for arbitrary-length string (UTF-8) data. If you can limit the length to a certain number of bytes, always use one of the value types (bytes1 to bytes32) because they are much cheaper. - The same applies for arrays: If you know that you will have at most a certain number of elements, always use a fixed array instead of a dynamic one. The reason is that a fixed array does not need a length parameter in storage and thus saves one storage slot. -[ Calldata instead of memory for external functions](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions) - Calldata is cheaper than memory. If the input argument does not need to be modified, consider using calldata in external functions
-- Function order matters
-  - When calling a function, the EVM jumps through the list of function selectors until it finds a match. The function selectors are ordered in hexadecimal order and each jump costs 22 gas. If you have a lot of functions, you can save gas by ordering them in a way that the most commonly called functions are at the top.
-- [Caching Storage Variable](https://www.rareskills.io/post/gas-optimization#viewer-8lubg)
-  - Cache
+- **Concept**: Aligning struct members under 32 bytes together optimizes storage usage on the EVM.
+- **Advantages**: This technique minimizes the number of `SLOAD` or `SSTORE` operations, slashing storage interaction costs by 50% or more when dealing with multiple struct values within a single slot.
+- **Tooling**: A Rust CLI application scrutinizes Solidity struct layouts, reorganizing fields to use fewer storage slots. It respects existing comments and assumes `bytes32` for unrecognized types.
+- **Documentation**: [Structured Data Packing Guidance](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#storage-packing)
+
+### Caching Storage Variables
+
+- **Approach**: Utilize local variables to cache frequently accessed storage variables, reducing the number of expensive storage reads and writes.
+- **Details**: Create a temporary local variable to store the value of a storage variable if it's accessed multiple times.
+- **Source**: [Caching Storage Variables](https://www.rareskills.io/post/gas-optimization#viewer-8lubg)
+
+### Calldata Efficiency
+
+- **Gas Savings**: Leveraging calldata for unaltered external function inputs is more cost-effective than utilizing memory.
+- **Implementation**: Analyze functions to ensure that inputs declared as `memory` are not modified. If unmodified, convert to `calldata`.
+- **Reference**: [Calldata Efficiency Tips](https://github.com/beskay/gas-guide/blob/main/OPTIMIZATIONS.md#calldata-instead-of-memory-for-external-functions)
+
+---
 
 ## Delivables of the project
 
@@ -42,12 +48,6 @@ Automated Rust-based CLI tool that optimizes gas of solidity code by
 - **Documentation** on how to install, configure, and use the tool.
 - **Test suite** that covers various Solidity contracts and ensures the reliability of the optimization process.
 - **Benchmarking reports** that demonstrate the gas savings achieved by the tool on sample contracts.
-
-### Reach Goals
-
-- **Calldata optimization** that identifies and updates external function parameters to use `calldata` when beneficial.
-- **Dry-run mode** that outputs potential optimizations without altering the original code, for manual review.
-- **Smart contract metrics dashboard** that visualizes gas usage before and after optimizations.
 
 ## Roadmap
 
