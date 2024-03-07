@@ -17,7 +17,7 @@
 //!  ```
 //!
 
-use logos::{Lexer, Logos, Source};
+use logos::{Extras, Lexer, Logos, Slice, Source};
 
 /// If the current token is an elementary type,
 /// this will hold it's size, if applicable.
@@ -31,467 +31,423 @@ use logos::{Lexer, Logos, Source};
 #[derive(Default, Clone, Copy)]
 pub struct TypeSize(pub u8, pub u8);
 
-/// `Token` represents the different tokens in the Solidity-like input that the lexer will parse.
+impl Extras for TypeSize {}
+
 #[derive(Debug, PartialEq, Clone, Copy, Logos)]
 #[extras = "TypeSize"]
 pub enum Token {
     #[end]
     EndOfProgram,
 
-    #[token(";")]
+    #[token = ";"]
     Semicolon,
 
-    #[token(":")]
+    #[token = ":"]
     Colon,
 
-    #[token(",")]
+    #[token = ","]
     Comma,
 
-    #[token(".")]
+    #[token = "."]
     Accessor,
 
-    #[token("(")]
+    #[token = "("]
     ParenOpen,
 
-    #[token(")")]
+    #[token = ")"]
     ParenClose,
 
-    #[token("{")]
+    #[token = "{"]
     BraceOpen,
 
-    #[token("}")]
+    #[token = "}"]
     BraceClose,
 
-    #[token("[")]
+    #[token = "["]
     BracketOpen,
 
-    #[token(")]")]
+    #[token = "]"]
     BracketClose,
 
-    #[token("=>")]
+    #[token = "=>"]
     Arrow,
 
-    #[regex("[a-zA-Z_$][a-zA-Z0-9_$]*")]
+    #[regex = "[a-zA-Z_$][a-zA-Z0-9_$]*"]
     Identifier,
 
-    #[regex("block|msg|tx|now|suicide|selfdestruct|addmod")]
-    #[regex("mulmod|sha3|keccak256|log0|log1|log2|log3|log4")]
-    #[regex("sha256|ecrecover|ripemd160|assert|revert|require")]
+    #[regex = "block|msg|tx|now|suicide|selfdestruct|addmod"]
+    #[regex = "mulmod|sha3|keccak256|log0|log1|log2|log3|log4"]
+    #[regex = "sha256|ecrecover|ripemd160|assert|revert|require"]
     IdentifierBuiltin,
 
-    #[token("contract")]
+    #[token = "contract"]
     DeclarationContract,
 
-    #[token("library")]
+    #[token = "library"]
     DeclarationLibrary,
 
-    #[token("interface")]
+    #[token = "interface"]
     DeclarationInterface,
 
-    #[token("enum")]
+    #[token = "enum"]
     DeclarationEnum,
 
-    #[token("struct")]
+    #[token = "struct"]
     DeclarationStruct,
 
-    #[token("modifier")]
+    #[token = "modifier"]
     DeclarationModifier,
 
-    #[token("event")]
+    #[token = "event"]
     DeclarationEvent,
 
-    #[token("function")]
+    #[token = "function"]
     DeclarationFunction,
 
-    #[token("var")]
+    #[token = "var"]
     DeclarationVar,
 
-    #[token("anonymous")]
+    #[token = "anonymous"]
     KeywordAnonymous,
 
-    #[token("as")]
+    #[token = "as"]
     KeywordAs,
 
-    #[token("assembly")]
+    #[token = "assembly"]
     KeywordAssembly,
 
-    #[token("break")]
+    #[token = "break"]
     KeywordBreak,
 
-    #[token("constant")]
+    #[token = "constant"]
     KeywordConstant,
 
-    #[token("continue")]
+    #[token = "continue"]
     KeywordContinue,
 
-    #[token("do")]
+    #[token = "do"]
     KeywordDo,
 
-    #[token("delete")]
+    #[token = "delete"]
     KeywordDelete,
 
-    #[token("else")]
+    #[token = "else"]
     KeywordElse,
 
-    #[token("external")]
+    #[token = "external"]
     KeywordExternal,
 
-    #[token("for")]
+    #[token = "for"]
     KeywordFor,
 
     // FIXME: Should able to handle hex literals on lexer-level!
-    #[token("hex")]
+    #[token = "hex"]
     KeywordHex,
 
-    #[token("if")]
+    #[token = "if"]
     KeywordIf,
 
-    #[token("indexed")]
+    #[token = "indexed"]
     KeywordIndexed,
 
-    #[token("internal")]
+    #[token = "internal"]
     KeywordInternal,
 
-    #[token("import")]
+    #[token = "import"]
     KeywordImport,
 
-    #[token("is")]
+    #[token = "is"]
     KeywordIs,
 
-    #[token("mapping")]
+    #[token = "mapping"]
     KeywordMapping,
 
-    #[token("memory")]
+    #[token = "memory"]
     KeywordMemory,
 
-    #[token("new")]
+    #[token = "new"]
     KeywordNew,
 
-    #[token("payable")]
+    #[token = "payable"]
     KeywordPayable,
 
-    #[token("public")]
+    #[token = "public"]
     KeywordPublic,
 
-    #[token("pragma")]
+    #[token = "pragma"]
     KeywordPragma,
 
-    #[token("private")]
+    #[token = "private"]
     KeywordPrivate,
 
-    #[token("pure")]
+    #[token = "pure"]
     KeywordPure,
 
-    #[token("return")]
+    #[token = "return"]
     KeywordReturn,
 
-    #[token("returns")]
+    #[token = "returns"]
     KeywordReturns,
 
-    #[token("storage")]
+    #[token = "storage"]
     KeywordStorage,
 
-    #[token("super")]
+    #[token = "super"]
     KeywordSuper,
 
-    #[token("this")]
+    #[token = "this"]
     KeywordThis,
 
-    #[token("throw")]
+    #[token = "throw"]
     KeywordThrow,
 
-    #[token("using")]
+    #[token = "using"]
     KeywordUsing,
 
-    #[token("view")]
+    #[token = "view"]
     KeywordView,
 
-    #[token("while")]
+    #[token = "while"]
     KeywordWhile,
 
-    #[regex("abstract|after|case|catch|default|final|in")]
-    #[regex("inline|let|match|null|of|relocatable|static")]
-    #[regex("switch|try|type|typeof")]
+    #[regex = "abstract|after|case|catch|default|final|in"]
+    #[regex = "inline|let|match|null|of|relocatable|static"]
+    #[regex = "switch|try|type|typeof"]
     ReservedWord,
 
-    #[token("bool")]
+    #[token = "bool"]
     TypeBool,
 
-    #[token("address")]
+    #[token = "address"]
     TypeAddress,
 
-    #[token("string")]
+    #[token = "string"]
     TypeString,
 
-    #[regex("byte|bytes[1-2][0-9]?|bytes3[0-2]?|bytes[4-9]", validate_bytes)]
+    #[regex = "byte|bytes[1-2][0-9]?|bytes3[0-2]?|bytes[4-9]"]
+    #[callback = "validate_bytes"]
     TypeByte,
 
-    #[token("bytes")]
+    #[token = "bytes"]
     TypeBytes,
 
-    #[token("int", default_size)]
+    #[token = "int"]
+    #[callback = "default_size"]
     TypeInt,
 
-    #[token("uint", default_size)]
+    #[token = "uint"]
+    #[callback = "default_size"]
     TypeUint,
 
-    #[regex(
-        "int(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144)",
-        validate_int
-    )]
-    #[regex(
-        "int(152|160|168|176|184|192|200|208|216|224|232|240|248|256)",
-        validate_int
-    )]
+    #[regex = "int(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144)"]
+    #[regex = "int(152|160|168|176|184|192|200|208|216|224|232|240|248|256)"]
+    #[callback = "validate_int"]
     TypeIntN,
 
-    #[regex(
-        "uint(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144)",
-        validate_uint
-    )]
-    #[regex(
-        "uint(152|160|168|176|184|192|200|208|216|224|232|240|248|256)",
-        validate_uint
-    )]
+    #[regex = "uint(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144)"]
+    #[regex = "uint(152|160|168|176|184|192|200|208|216|224|232|240|248|256)"]
+    #[callback = "validate_uint"]
     TypeUintN,
 
-    #[regex("fixed([1-9][0-9]?[0-9]?x[0-9][0-9]?)?", validate_fixed)]
+    #[regex = "fixed([1-9][0-9]?[0-9]?x[0-9][0-9]?)?"]
+    #[callback = "validate_fixed"]
     TypeFixed,
 
-    #[regex("ufixed([1-9][0-9]?[0-9]?x[0-9][0-9]?)?", validate_fixed)]
-    // #[callback("validate_fixed")]
+    #[regex = "ufixed([1-9][0-9]?[0-9]?x[0-9][0-9]?)?"]
+    #[callback = "validate_fixed"]
     TypeUfixed,
 
-    #[token("true")]
+    #[token = "true"]
     LiteralTrue,
 
-    #[token("false")]
+    #[token = "false"]
     LiteralFalse,
 
-    #[regex("0[xX][0-9a-fA-F]+")]
+    #[regex = "0[xX][0-9a-fA-F]+"]
     LiteralHex,
 
-    #[regex("[0-9]+")]
+    #[regex = "[0-9]+"]
     LiteralInteger,
 
-    #[regex(
-        "[0-9]*\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+",
-        rational_to_integer
-    )]
+    #[regex = "[0-9]*\\.[0-9]+([eE][+-]?[0-9]+)?|[0-9]+[eE][+-]?[0-9]+"]
+    #[callback = "rational_to_integer"]
     LiteralRational,
 
-    #[regex("\"([^\"\\\\]|\\\\.)*\"")]
-    #[regex("'([^'\\\\]|\\\\.)*'")]
+    #[regex = "\"([^\"\\\\]|\\\\.)*\""]
+    #[regex = "'([^'\\\\]|\\\\.)*'"]
     LiteralString,
 
-    #[token("ether")]
+    #[token = "ether"]
     UnitEther,
 
-    #[token("finney")]
+    #[token = "finney"]
     UnitFinney,
 
-    #[token("szabo")]
+    #[token = "szabo"]
     UnitSzabo,
 
-    #[token("wei")]
+    #[token = "wei"]
     UnitWei,
 
-    #[token("years")]
+    #[token = "years"]
     UnitTimeYears,
 
-    #[token("weeks")]
+    #[token = "weeks"]
     UnitTimeWeeks,
 
-    #[token("days")]
+    #[token = "days"]
     UnitTimeDays,
 
-    #[token("hours")]
+    #[token = "hours"]
     UnitTimeHours,
 
-    #[token("minutes")]
+    #[token = "minutes"]
     UnitTimeMinutes,
 
-    #[token("seconds")]
+    #[token = "seconds"]
     UnitTimeSeconds,
 
-    #[token(":=")]
+    #[token = ":="]
     AssemblyBind,
 
-    #[token("=:")]
+    #[token = "=:"]
     AssemblyAssign,
 
-    #[token("++")]
+    #[token = "++"]
     OperatorIncrement,
 
-    #[token("--")]
+    #[token = "--"]
     OperatorDecrement,
 
-    #[token("!")]
+    #[token = "!"]
     OperatorLogicalNot,
 
-    #[token("~")]
+    #[token = "~"]
     OperatorBitNot,
 
-    #[token("*")]
+    #[token = "*"]
     OperatorMultiplication,
 
-    #[token("/")]
+    #[token = "/"]
     OperatorDivision,
 
-    #[token("%")]
+    #[token = "%"]
     OperatorRemainder,
 
-    #[token("**")]
+    #[token = "**"]
     OperatorExponent,
 
-    #[token("+")]
+    #[token = "+"]
     OperatorAddition,
 
-    #[token("-")]
+    #[token = "-"]
     OperatorSubtraction,
 
-    #[token("<<")]
+    #[token = "<<"]
     OperatorBitShiftLeft,
 
-    #[token(">>")]
+    #[token = ">>"]
     OperatorBitShiftRight,
 
-    #[token("<")]
+    #[token = "<"]
     OperatorLesser,
 
-    #[token("<=")]
+    #[token = "<="]
     OperatorLesserEquals,
 
-    #[token(">")]
+    #[token = ">"]
     OperatorGreater,
 
-    #[token(">=")]
+    #[token = ">="]
     OperatorGreaterEquals,
 
-    #[token("==")]
+    #[token = "=="]
     OperatorEquality,
 
-    #[token("!=")]
+    #[token = "!="]
     OperatorInequality,
 
-    #[token("&")]
+    #[token = "&"]
     OperatorBitAnd,
 
-    #[token("^")]
+    #[token = "^"]
     OperatorBitXor,
 
-    #[token("|")]
+    #[token = "|"]
     OperatorBitOr,
 
-    #[token("&&")]
+    #[token = "&&"]
     OperatorLogicalAnd,
 
-    #[token("||")]
+    #[token = "||"]
     OperatorLogicalOr,
 
-    #[token("?")]
+    #[token = "?"]
     OperatorConditional,
 
-    #[token("=")]
+    #[token = "="]
     Assign,
 
-    #[token("+=")]
+    #[token = "+="]
     AssignAddition,
 
-    #[token("-=")]
+    #[token = "-="]
     AssignSubtraction,
 
-    #[token("*=")]
+    #[token = "*="]
     AssignMultiplication,
 
-    #[token("/=")]
+    #[token = "/="]
     AssignDivision,
 
-    #[token("%=")]
+    #[token = "%="]
     AssignRemainder,
 
-    #[token("<<=")]
+    #[token = "<<="]
     AssignBitShiftLeft,
 
-    #[token(">>=")]
+    #[token = ">>="]
     AssignBitShiftRight,
 
-    #[token("&=")]
+    #[token = "&="]
     AssignBitAnd,
 
-    #[token("^=")]
+    #[token = "^="]
     AssignBitXor,
 
-    #[token("|=")]
+    #[token = "|="]
     AssignBitOr,
 
-    #[regex("//[^\n]*", ignore_comments)]
-    #[token("/*", ignore_comments)]
+    #[regex = "//[^\n]*"]
+    #[token = "/*"]
+    #[callback = "ignore_comments"]
+    #[error]
     UnexpectedToken,
     UnexpectedEndOfProgram,
-    // #[regex(r"/\*([^*]|\*+[^*/])*\*+/")]
-    // BlockComment,
 }
 
-/// CallBack functions for the lexer
-///
-/// These functions are called when the lexer encounters a token that matches the regex.
+fn ignore_comments<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
+    use logos::internal::LexerInternal;
 
-// /// Ignore comments in the source code.
-// fn ignore_comments<Src: Source>(lex: &mut Lexer<Token>) {
-//     // Check if the current slice matches the start of a block comment "/*".
-//     if lex.slice().as_bytes() == b"/*" {
-//         // Continue reading characters until the end of the block comment.
-//         loop {
-//             match lex.read() {
-//                 0 => {
-//                     // If the lexer reaches the end of the source without finding the closing "*/",
-//                     // set the token to an unexpected end of program token and return.
-//                     return Token::UnexpectedEndOfProgram;
-//                 }
-//                 b'*' => {
-//                     // If the current character is '*', check the next character.
-//                     if lex.next() == b'/' {
-//                         // If the next character is '/', the end of the block comment has been found.
-//                         // Advance the lexer's position and exit the loop.
-//                         lex.bump();
-//                         break;
-//                     }
-//                 }
-//                 _ => {
-//                     // For any other character, simply advance the lexer's position.
-//                     lex.bump();
-//                 }
-//             }
-//         }
-//     }
-
-//     // Advance the lexer to the next token after ignoring the comment.
-//     lex.advance();
-// }
-
-/// Ignore comments in the source code.
-fn ignore_comments<Src: Source>(lex: &mut Lexer<Token>) {
-    // Check if the current slice matches the start of a block comment "/*".
-    if lex.slice() == "/*" {
-        // Continue reading characters until the end of the block comment.
-        while let Some((index, _)) = lex.source().iter().enumerate().find(|&(_, &b)| b == b'*') {
-            // Check for the end of the block comment "*/".
-            if lex.source()[index..].starts_with("*/") {
-                // Advance the lexer's position by the size of the comment.
-                lex.bump(index + 2); // "+ 2" to include the characters "*/"
-                return;
+    if lex.slice().as_bytes() == b"/*" {
+        loop {
+            match lex.read() {
+                0 => return lex.token = Token::UnexpectedEndOfProgram,
+                b'*' => {
+                    if lex.next() == b'/' {
+                        lex.bump();
+                        break;
+                    }
+                }
+                _ => lex.bump(),
             }
         }
-        // If the lexer reaches the end of the source without finding the closing "*/",
-        // set the token to an unexpected end of program token and return.
     }
-    // Advance the lexer to the next token after ignoring the comment.
-    // The advance is implicit as this function will return and the lexer
-    // will continue lexing the next token.
+
+    lex.advance();
 }
 
-fn validate_bytes<Src: Source>(lex: &mut Lexer<Token>) {
+fn validate_bytes<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     let slice = lex.slice().as_bytes();
 
     if slice.len() > 5 {
@@ -505,11 +461,11 @@ fn validate_bytes<Src: Source>(lex: &mut Lexer<Token>) {
     }
 }
 
-fn default_size(lex: &mut Lexer<Token>) {
+fn default_size<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     lex.extras.0 = 32;
 }
 
-fn validate_int(lex: &mut Lexer<Token>) -> Token {
+fn validate_int<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     let slice = lex.slice().as_bytes();
 
     let mut n = (slice[3] - b'0') as u16;
@@ -519,10 +475,10 @@ fn validate_int(lex: &mut Lexer<Token>) -> Token {
     }
 
     lex.extras.0 = (n / 8) as u8;
-    Token::TypeInt
+    lex.token = Token::TypeInt;
 }
 
-fn validate_uint(lex: &mut Lexer<Token>) -> Token {
+fn validate_uint<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     let slice = lex.slice().as_bytes();
 
     let mut n = (slice[4] - b'0') as u16;
@@ -532,10 +488,10 @@ fn validate_uint(lex: &mut Lexer<Token>) -> Token {
     }
 
     lex.extras.0 = (n / 8) as u8;
-    Token::TypeUint;
+    lex.token = Token::TypeUint;
 }
 
-fn validate_fixed(lex: &mut Lexer<Token>) -> Token {
+fn validate_fixed<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     let slice = lex.slice().as_bytes();
     let cutoff = if slice.starts_with(b"u") { 6 } else { 5 };
 
@@ -557,14 +513,14 @@ fn validate_fixed(lex: &mut Lexer<Token>) -> Token {
     }
 
     if n % 8 != 0 || n > 256 || m > 80 {
-        Token::Identifier
+        lex.token = Token::Identifier;
     } else {
         lex.extras.0 = (n / 8) as u8;
         lex.extras.1 = m;
     }
 }
 
-fn rational_to_integer(lex: &mut Lexer<Token>) -> Token {
+fn rational_to_integer<'source, Src: Source<'source>>(lex: &mut Lexer<Token, Src>) {
     let mut floating = 0i32;
     let mut iter = lex.slice().as_bytes().iter();
 
@@ -603,8 +559,6 @@ fn rational_to_integer(lex: &mut Lexer<Token>) -> Token {
     }
 
     if floating + e * neg >= 0 {
-        Token::LiteralInteger
-    } else {
-        Token::LiteralRational
+        lex.token = Token::LiteralInteger;
     }
 }
