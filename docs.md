@@ -1,6 +1,6 @@
 # Docs
 
-# Setup
+## Setup
 
 Running the program: `cargo run`
 
@@ -43,11 +43,34 @@ For the optimizations, the parser should:
 
 ### Optimizer
 
+The optimizer traverses the AST and applies transformations to optimize the code.
+
+For Struct Packing:
+
+1. Identify struct definitions.
+2. Within each struct, group fields that are smaller than 32 bytes and reorder them to minimize storage slots.
+3. Ensure that the reordering does not violate any type-alignment rules that could lead to unexpected behavior.
+
+For Storage Variable Caching:
+
+1. Identify functions with multiple reads to the same storage variable.
+2. Introduce a local variable at the beginning of the function to cache the storage read.
+3. Replace subsequent reads with references to the cached local variable.
+4. Ensure the caching does not interfere with any writes to the storage variable within the function scope.
+
+For Calldata Optimization:
+
+1. Identify external functions with parameters declared as memory.
+2. Analyze the function body to check if the memory parameters are modified.
+3. If no modifications are detected, change the parameter type to calldata.
+
 ### Printer
 
-- Prints out the optimised Solidity code
+After optimization, the transformed AST must be converted back into Solidity source code. This involves:
 
-Functionality
+- Writing a code generator that traverses the optimized AST and produces Solidity code.
+- Ensuring comments and formatting are preserved as much as possible.
+- Verifying that the generated code compiles and behaves as intended.
 
 ---
 

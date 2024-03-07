@@ -4,6 +4,10 @@ An high performance automated CLI tool that optimizes gas usage in Solidity smar
 
 For more information on architecture and implementation, see the [docs](docs.md)
 
+Disclaimer:
+
+This code is a work in progress and can contain bugs. Use it at your own risk. Feature request and bug reports are welcome.
+
 **Problem Statement:**
 
 Solidity developers need tools to help them write gas-efficient code to minimize the execution cost of smart contracts on the blockchain. While there are some linters and optimizers available, there's a lack of tools specifically designed to analyze and suggest optimizations at both the source code and intermediate representation levels.
