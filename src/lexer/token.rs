@@ -38,7 +38,7 @@ impl Extras for TypeSize {}
 #[derive(Debug, PartialEq, Clone, Copy, Logos)]
 #[extras = "TypeSize"]
 pub enum Token {
-    #[token = " "]
+    #[regex = r"\s+"]
     Whitespace,
 
     #[token = "\n"]
