@@ -4,17 +4,6 @@
 
 Running the program: `cargo run`
 
-## Libraries
-
-Logos:
-
-- when using logos, you don't manually manipulate the lexer's current token, but rather define token patterns and let logos do the work of lexing and tokenization for you. If you need to perform additional processing on tokens, you do that at a higher level, usually in a loop that retrieves each token from the lexer.
-
-Solidity Specifications:
-
-- [Lexer Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityLexer.g4)
-- [Parser Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityParser.g4)
-
 ## Design
 
 Overall Architecture:
@@ -136,3 +125,13 @@ Implementation:
 ```
 
 ```
+
+## Bugs
+
+### State Variable Array
+
+- State variables like `[]uint256 public arr;` are not handled correctly. The parser does not recognize the array type and does not generate the correct AST nodes.
+
+Fix:
+
+- The problem lies in `ArrayTypeName`. A reference fix could be `ElementaryTypeName`

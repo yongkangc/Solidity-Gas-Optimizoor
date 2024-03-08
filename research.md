@@ -5,9 +5,31 @@
 - Each component of the project - parser, gas optimization algorithms should be designed as a separate modules. This allows for other developers to use the parser or the gas optimization algorithms in their own projects.
 - Using comments for rustdoc
 
-Libraries:
+## Libraries
 
-- [Logos Derive](https://crates.io/crates/logos-derive)
+### Logos
+
+- when using logos, you don't manually manipulate the lexer's current token, but rather define token patterns and let logos do the work of lexing and tokenization for you. If you need to perform additional processing on tokens, you do that at a higher level, usually in a loop that retrieves each token from the lexer.
+
+### Solidity Specifications
+
+- [Lexer Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityLexer.g4)
+- [Parser Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityParser.g4)
+
+### Arena
+
+- Function: Allocates large memory blocks; Divide memory out into smaller chunks and allocate to objects.
+- Benefits: Reduces fragmentation and overhead from many small allocations.
+- Usage: Optimize performance where many small, similarly-lived objects are allocated/deallocated.
+- Replacement: Substitutes individual `Box` or other heap allocations when grouped deallocation is viable.
+
+Why is it good for us?
+
+- Using an arena simplifies the parser's code by removing the need for individual deallocation logic for each AST node.
+
+> Performance: It improves overall performance by reducing the number of individual allocations and deallocations, which can be costly operations.
+
+> Safety: The arena ensures that all allocated objects have the correct lifetime, preventing dangling references within the scope of the parsing operation.
 
 ## Deep Dive into Solidity
 

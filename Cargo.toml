@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 logos = "0.7.7"
-
+toolshed = "0.6"
