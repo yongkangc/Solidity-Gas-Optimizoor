@@ -11,6 +11,10 @@ Libraries:
 
 ## Deep Dive into Solidity
 
+### Grammer of Solidity
+
+https://docs.soliditylang.org/en/latest/grammar.html
+
 ### How does Solidity compile into EVM Bytecode?
 
 ### Gas Optimisation Patterns in Solidity

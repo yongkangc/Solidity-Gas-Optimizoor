@@ -30,7 +30,6 @@ contract NotOptimizedStruct {
 
 The optimization can be done by rearranging the struct fields to ensure that smaller fields are packed together within the 32-byte slots. Here's the optimized struct:
 
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract OptimizedStruct {

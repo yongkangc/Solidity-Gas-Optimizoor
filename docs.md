@@ -10,6 +10,11 @@ Logos:
 
 - when using logos, you don't manually manipulate the lexer's current token, but rather define token patterns and let logos do the work of lexing and tokenization for you. If you need to perform additional processing on tokens, you do that at a higher level, usually in a loop that retrieves each token from the lexer.
 
+Solidity Specifications:
+
+- [Lexer Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityLexer.g4)
+- [Parser Grammer](https://github.com/ethereum/solidity/blob/develop/docs/grammar/SolidityParser.g4)
+
 ## Design
 
 Overall Architecture:
@@ -45,13 +50,39 @@ For the optimizations, the parser should:
 
 The optimizer traverses the AST and applies transformations to optimize the code.
 
-For Struct Packing:
+**For Struct Packing:**
 
 1. Identify struct definitions.
 2. Within each struct, group fields that are smaller than 32 bytes and reorder them to minimize storage slots.
 3. Ensure that the reordering does not violate any type-alignment rules that could lead to unexpected behavior.
 
-For Storage Variable Caching:
+Logic for struct packing:
+
+1. Get the fields from struct
+2. Sort the fields in decreasing order of size
+3. Pack the fields into storage slots
+
+Pseudocode for field packing:
+
+- Initialization: The function starts with a list of fields to pack and an initially empty or partially filled list of StorageSlot bins. It also initializes an empty list to hold different packing options (packing_options), representing various ways the fields can be packed into slots.
+
+- The function takes the first field from the list (the one to pack next) and checks each existing slot to see if the field can fit.
+
+- If the field fits within the slot (the combined size of the field plus the slot's current offset is less than or equal to 32 bytes), the function:
+  - Creates a copy of the current list of slots.
+  - Adds the field to the appropriate slot in the copied list.
+  - Adjusts the offset of the slot to account for the added field's size.
+  - Recursively calls bin_packing with the remainder of the fields and the updated list of slots, then adds the returned packing configuration to the packing_options.
+- If the field does not fit in any existing slot, the function:
+
+  - Creates a new StorageSlot bin and places the current field in it.
+  - Recursively calls bin_packing (grouping algorithm) with the remainder of the fields and the updated list of slots, including the new slot, then adds the returned packing configuration to the packing_options.
+
+- After processing all fields, the function returns the packing_options list, which contains all possible packing configurations.
+
+- The main function then selects the best packing configuration from the list of options and applies it to the struct definition.
+
+**For Storage Variable Caching:**
 
 1. Identify functions with multiple reads to the same storage variable.
 2. Introduce a local variable at the beginning of the function to cache the storage read.
@@ -101,3 +132,7 @@ Implementation:
   - If there is no write, change it to `calldata`
 
 ---
+
+```
+
+```
