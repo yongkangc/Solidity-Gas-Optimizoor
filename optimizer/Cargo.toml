@@ -1,0 +1,9 @@
+[package]
+name = "optimizoor-optimizers"
+version = "0.1.0"
+edition = "2021"
+authors = ["Yong Kang <chiayongkang@hotmail.com>", "Chng Xiang Lin"]
+license = "GPL-3.0"
+repository = "https://github.com/ExtremelySunnyYK/Solidity-Gas-Optimizoor"
+description = "Optimizers that makes use of the AST"
+

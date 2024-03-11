@@ -267,7 +267,7 @@ mod test {
 
     #[test]
     fn can_parse_second_price_auction() {
-        let source = include_str!("../../examples/unoptimized_contracts/struct_packing.sol");
+        let source = include_str!("../../examples/second-price-auction.sol");
 
         let ast = parse(source).unwrap();
 
