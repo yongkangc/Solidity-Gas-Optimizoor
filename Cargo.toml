@@ -1,11 +1,13 @@
-[package]
-name = "optimizor"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "lunarity",
+    "ast",
+    "parser",
+    "lexer",
+    "cli",
+]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile]
+release = { lto = true }
+bench = { lto = true }
 
-[dependencies]
-logos = "0.7.7"
-pretty_assertions = "1.4.0"
-toolshed = "0.6"
