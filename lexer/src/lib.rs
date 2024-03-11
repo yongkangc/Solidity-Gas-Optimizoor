@@ -6,14 +6,35 @@ pub use self::token::Token;
 pub use logos::{lookup, Logos};
 pub type Lexer<S> = logos::Lexer<Token, S>;
 
-// FIXME: This should probably be handled with a callback
+// /// Tokenizes the given Solidity source code.
+// /// Entry point for the lexer.
+// pub fn tokenize(source: &str) -> LexedOutput {
+//     let mut lexer = Token::lexer(source);
+//     let mut tokens = Vec::new();
+//     let mut slices = Vec::new();
+
+//     while lexer.token != Token::EndOfProgram {
+//         tokens.push(lexer.token);
+//         if lexer.slice() == "" && lexer.range() != (0..0) {
+//             // Whitespace
+//             let whitespace = " ".repeat(lexer.range().end - lexer.range().start);
+//             slices.push(whitespace);
+//         }
+//         slices.push(lexer.slice().to_owned()); // Convert to owned String.
+//         lexer.advance();
+//     }
+
+//     LexedOutput { tokens, slices }
+// }
+
+/// Extracts the pragma version from the given source code.
 #[inline]
 pub fn read_pragma<'source, S: logos::Source<'source>>(lex: &mut Lexer<S>) -> S::Slice {
     use logos::internal::LexerInternal;
 
     loop {
         match lex.read() {
-            0x01...0x20 => lex.bump(),
+            0x01..=0x20 => lex.bump(),
             _ => break,
         }
     }

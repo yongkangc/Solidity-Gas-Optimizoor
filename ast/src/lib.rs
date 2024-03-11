@@ -6,27 +6,27 @@ extern crate pretty_assertions;
 
 #[macro_use]
 mod impl_from;
+mod assembly;
+mod contract;
+mod expression;
+mod function;
 mod node;
 mod source;
-mod contract;
-mod function;
-mod type_name;
-mod expression;
 mod statement;
-mod assembly;
+mod type_name;
 
+use std::marker::PhantomData;
 use toolshed::list::{List, UnsafeList};
 use toolshed::Arena;
-use std::marker::PhantomData;
 
+pub use self::assembly::*;
+pub use self::contract::*;
+pub use self::expression::*;
+pub use self::function::*;
 pub use self::node::{Node, NodeInner, OptionalLocation};
 pub use self::source::*;
-pub use self::contract::*;
-pub use self::function::*;
-pub use self::type_name::*;
-pub use self::expression::*;
 pub use self::statement::*;
-pub use self::assembly::*;
+pub use self::type_name::*;
 
 /// Useful for boolean flags that need location information via FlagNode,
 /// for example: `indexed` or `anonymous`.
@@ -45,7 +45,6 @@ pub type IdentifierNode<'ast> = Node<'ast, Identifier<'ast>>;
 pub type IdentifierList<'ast> = NodeList<'ast, Identifier<'ast>>;
 pub type StringLiteralNode<'ast> = Node<'ast, StringLiteral<'ast>>;
 
-
 /// A Solidity source code parsed to an AST
 pub struct Program<'ast> {
     /// `SourceUnitList<'ast>` converted to an `UnsafeList` to deal with
@@ -56,7 +55,7 @@ pub struct Program<'ast> {
     arena: Arena,
 
     /// For lifetime safety :).
-    _phantom: PhantomData<SourceUnitList<'ast>>
+    _phantom: PhantomData<SourceUnitList<'ast>>,
 }
 
 impl<'ast> Program<'ast> {

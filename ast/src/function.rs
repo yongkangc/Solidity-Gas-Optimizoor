@@ -1,4 +1,3 @@
-use {*};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct FunctionDefinition<'ast> {
