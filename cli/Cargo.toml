@@ -1,0 +1,15 @@
+[package]
+name = "optimizoor-cli"
+version = "0.1.0"
+edition = "2024"
+authors = ["Yong Kang <chiayongkang@hotmail.com>", "Chng Xiang Lin"]
+license = "GPL-3.0"
+repository = "https://github.com/ExtremelySunnyYK/Solidity-Gas-Optimizoor"
+description = "A high performance Solidity language Parser"
+
+[[bin]]
+name = "optimizoor-cli"
+path = "main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
