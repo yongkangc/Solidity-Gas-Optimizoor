@@ -4,6 +4,7 @@ members = [
     "parser",
     "lexer",
     "cli",
+    "optimizer",
 ]
 
 [profile]

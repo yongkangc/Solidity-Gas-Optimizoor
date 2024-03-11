@@ -43,10 +43,6 @@ The optimizer traverses the AST and applies transformations to optimize the code
 
 **For Struct Packing:**
 
-1. Identify struct definitions.
-2. Within each struct, group fields that are smaller than 32 bytes and reorder them to minimize storage slots.
-3. Ensure that the reordering does not violate any type-alignment rules that could lead to unexpected behavior.
-
 Logic for struct packing:
 
 1. Get the fields from struct

@@ -13,3 +13,7 @@ path = "main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dependencies]
+optimizoor-lexer = {path = "../lexer" }
+optimizoor-ast = { path = "../ast" }
+optimizoor-parser = {path = "../parser"}

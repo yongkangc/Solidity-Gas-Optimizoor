@@ -39,11 +39,13 @@ pub enum Token {
     #[end]
     EndOfProgram,
 
+    // Instead of using whitespace, use range of tokens instead
     // #[regex = r"\s+"]
     // Whitespace,
 
     // #[token = "\n"]
     // Newline,
+
     #[token = ";"]
     Semicolon,
 

@@ -7,3 +7,7 @@ license = "GPL-3.0"
 repository = "https://github.com/ExtremelySunnyYK/Solidity-Gas-Optimizoor"
 description = "Optimizers that makes use of the AST"
 
+[dependencies]
+optimizoor-ast = { path = "../ast" }
+optimizoor-parser = { path = "../parser" }
+regex = "1.10.3"

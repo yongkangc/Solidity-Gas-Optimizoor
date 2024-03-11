@@ -247,7 +247,6 @@ impl<'ast> Parser<'ast> {
 /// Parse the Solidity source from `&str` and produce an Abstract Syntax Tree for it.
 pub fn parse<'src, 'ast>(source: &'src str) -> Result<Program<'ast>, Vec<Error>> {
     let arena = Arena::new();
-    println!("source {:?}", source);
     let (body, errors) = {
         let mut parser = Parser::new(source, &arena);
         parser.parse();
@@ -270,8 +269,5 @@ mod test {
         let source = include_str!("../../examples/second-price-auction.sol");
 
         let ast = parse(source).unwrap();
-
-        // print
-        println!("{:#?}", ast.body());
     }
 }

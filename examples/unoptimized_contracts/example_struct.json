@@ -1,0 +1,59 @@
+ (91:343) StructDefinition(
+                    StructDefinition {
+                        name: (98:106) "Employee",
+                        body: [
+                            (117:127) VariableDeclaration {
+                                type_name: (117:124) ElementaryTypeName(
+                                    Uint(
+                                        32,
+                                    ),
+                                ),
+                                location: None,
+                                id: (125:127) "id",
+                            },
+                            (156:169) VariableDeclaration {
+                                type_name: (156:162) ElementaryTypeName(
+                                    Uint(
+                                        4,
+                                    ),
+                                ),
+                                location: None,
+                                id: (163:169) "salary",
+                            },
+                            (194:204) VariableDeclaration {
+                                type_name: (194:200) ElementaryTypeName(
+                                    Uint(
+                                        4,
+                                    ),
+                                ),
+                                location: None,
+                                id: (201:204) "age",
+                            },
+                            (232:245) VariableDeclaration {
+                                type_name: (232:236) ElementaryTypeName(
+                                    Bool,
+                                ),
+                                location: None,
+                                id: (237:245) "isActive",
+                            },
+                            (269:281) VariableDeclaration {
+                                type_name: (269:276) ElementaryTypeName(
+                                    Address,
+                                ),
+                                location: None,
+                                id: (277:281) "addr",
+                            },
+                            (308:325) VariableDeclaration {
+                                type_name: (308:314) ElementaryTypeName(
+                                    Uint(
+                                        2,
+                                    ),
+                                ),
+                                location: None,
+                                id: (315:325) "department",
+                            },
+                        ],
+                    },
+                ),
+            ],
+        },

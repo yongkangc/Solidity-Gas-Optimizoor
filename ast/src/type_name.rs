@@ -53,6 +53,8 @@ impl<'ast> From<ElementaryTypeName> for TypeName<'ast> {
     }
 }
 
+
+
 impl_from! {
     Identifier => TypeName::UserDefinedTypeName,
     Mapping => TypeName::Mapping,

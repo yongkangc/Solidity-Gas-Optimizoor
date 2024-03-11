@@ -10,19 +10,6 @@ contract NotOptimizedStruct {
         address addr;      // 20 bytes
         uint16 department; // 2 bytes
     }
-
-    Employee[] public employees;
-
-    function addEmployee(
-        uint256 _id,
-        uint32 _salary,
-        uint32 _age,
-        bool _isActive,
-        address _addr,
-        uint16 _department
-    ) public {
-        employees.push(Employee(_id, _salary, _age, _isActive, _addr, _department));
-    }
 }
 
 /**
@@ -43,18 +30,6 @@ contract OptimizedStruct {
         // Total: 63 bytes, but will occupy 64 bytes (2 slots) due to alignment
     }
 
-    Employee[] public employees;
-
-    function addEmployee(
-        uint256 _id,
-        address _addr,
-        uint32 _salary,
-        uint32 _age,
-        uint16 _department,
-        bool _isActive
-    ) public {
-        employees.push(Employee(_id, _addr, _salary, _age, _department, _isActive));
-    }
 }
 In the optimized version, the address type is placed after the uint256 since they both don't completely fill up their slots and cannot be packed with any smaller types. The uint32 and uint16 types are placed next, allowing them to share a slot, and finally, the bool is placed at the end. This struct organization takes advantage of the space within the slots more efficiently, potentially reducing gas costs when storing and retrieving Employee struct instances.
  */
