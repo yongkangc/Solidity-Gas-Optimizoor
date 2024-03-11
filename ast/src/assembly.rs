@@ -1,3 +1,4 @@
+use crate::{Identifier, IdentifierNode, Node, NodeList, Primitive};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct InlineAssemblyBlock<'ast> {

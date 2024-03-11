@@ -1,8 +1,8 @@
 use toolshed::list::ListBuilder;
 
+use crate::{Parser, Precedence, P2, TOP};
 use ast::*;
-use {Parser, Precedence, P2, TOP};
-use lexer::{Token, Logos, lookup};
+use lexer::{lookup, Logos, Token};
 
 type HandlerFn = for<'ast> fn(&mut Parser<'ast>) -> Option<ExpressionNode<'ast>>;
 
@@ -69,13 +69,13 @@ impl<'ast> Parser<'ast> {
     pub fn expression_list(&mut self) -> ExpressionList<'ast> {
         let builder = match self.expression(TOP) {
             Some(expression) => ListBuilder::new(self.arena, expression),
-            None             => return NodeList::empty(),
+            None => return NodeList::empty(),
         };
 
         while self.allow(Token::Comma) {
             match self.expression(TOP) {
                 Some(expression) => builder.push(self.arena, expression),
-                None             => self.error(),
+                None => self.error(),
             }
         }
 
@@ -83,23 +83,22 @@ impl<'ast> Parser<'ast> {
     }
 
     fn tuple_expression(&mut self) -> Option<ExpressionNode<'ast>> {
-        let start       = self.start_then_advance();
+        let start = self.start_then_advance();
         let expressions = self.expression_list();
-        let end         = self.expect_end(Token::ParenClose);
+        let end = self.expect_end(Token::ParenClose);
 
-        self.node_at(start, end, TupleExpression {
-            expressions,
-        })
+        self.node_at(start, end, TupleExpression { expressions })
     }
 
     fn prefix_expression(&mut self, operator: PrefixOperator) -> Option<ExpressionNode<'ast>> {
         let operator: Node<_> = self.node_at_token(operator);
         let operand = expect!(self, self.expression(P2));
 
-        self.node_at(operator.start, operand.end, PrefixExpression {
-            operator,
-            operand,
-        })
+        self.node_at(
+            operator.start,
+            operand.end,
+            PrefixExpression { operator, operand },
+        )
     }
 
     fn integer_number(&mut self) -> Option<ExpressionNode<'ast>> {
@@ -109,18 +108,24 @@ impl<'ast> Parser<'ast> {
         self.lexer.advance();
 
         let unit = match self.lexer.token {
-            Token::UnitEther       => NumberUnit::Ether(EtherUnit::Ether),
-            Token::UnitFinney      => NumberUnit::Ether(EtherUnit::Finney),
-            Token::UnitSzabo       => NumberUnit::Ether(EtherUnit::Szabo),
-            Token::UnitWei         => NumberUnit::Ether(EtherUnit::Wei),
-            Token::UnitTimeYears   => NumberUnit::Time(TimeUnit::Years),
-            Token::UnitTimeWeeks   => NumberUnit::Time(TimeUnit::Weeks),
-            Token::UnitTimeDays    => NumberUnit::Time(TimeUnit::Days),
-            Token::UnitTimeHours   => NumberUnit::Time(TimeUnit::Hours),
+            Token::UnitEther => NumberUnit::Ether(EtherUnit::Ether),
+            Token::UnitFinney => NumberUnit::Ether(EtherUnit::Finney),
+            Token::UnitSzabo => NumberUnit::Ether(EtherUnit::Szabo),
+            Token::UnitWei => NumberUnit::Ether(EtherUnit::Wei),
+            Token::UnitTimeYears => NumberUnit::Time(TimeUnit::Years),
+            Token::UnitTimeWeeks => NumberUnit::Time(TimeUnit::Weeks),
+            Token::UnitTimeDays => NumberUnit::Time(TimeUnit::Days),
+            Token::UnitTimeHours => NumberUnit::Time(TimeUnit::Hours),
             Token::UnitTimeMinutes => NumberUnit::Time(TimeUnit::Minutes),
             Token::UnitTimeSeconds => NumberUnit::Time(TimeUnit::Seconds),
 
-            _ => return self.node_at(start, end, Primitive::IntegerNumber(number, NumberUnit::None)),
+            _ => {
+                return self.node_at(
+                    start,
+                    end,
+                    Primitive::IntegerNumber(number, NumberUnit::None),
+                )
+            }
         };
 
         let end = self.end_then_advance();
@@ -129,17 +134,19 @@ impl<'ast> Parser<'ast> {
     }
 }
 
-
 #[cfg(test)]
 mod test {
+    use crate::mock;
+
     use super::*;
-    use mock::{Mock, assert_units};
+    use mock::{assert_units, Mock};
 
     #[test]
     fn nested_expressions() {
         let m = Mock::new();
 
-        assert_units(r#"
+        assert_units(
+            r#"
 
             contract Foo {
                 function() {
@@ -153,53 +160,110 @@ mod test {
                 }
             }
 
-        "#, [
-            m.node(14, 286, ContractDefinition {
-                name: m.node(23, 26, "Foo"),
-                inherits: NodeList::empty(),
-                body: m.list([
-                    m.node(45, 272, FunctionDefinition {
-                        name: None,
-                        params: NodeList::empty(),
-                        visibility: None,
-                        mutability: None,
-                        modifiers: NodeList::empty(),
-                        returns: NodeList::empty(),
-                        block: m.node(56, 272, Block {
-                            body: m.list([
-                                m.stmt_expr(78, 83, 84, PrefixExpression {
-                                    operator: m.node(78, 79, PrefixOperator::LogicalNot),
-                                    operand: m.node(79, 83, "doge"),
-                                }),
-                                m.stmt_expr(105, 110, 111, PrefixExpression {
-                                    operator: m.node(105, 106, PrefixOperator::BitNot),
-                                    operand: m.node(106, 110, "doge"),
-                                }),
-                                m.stmt_expr(132, 143, 144, PrefixExpression {
-                                    operator: m.node(132, 138, PrefixOperator::Delete),
-                                    operand: m.node(139, 143, "doge"),
-                                }),
-                                m.stmt_expr(165, 171, 172, PrefixExpression {
-                                    operator: m.node(165, 167, PrefixOperator::Increment),
-                                    operand: m.node(167, 171, "doge"),
-                                }),
-                                m.stmt_expr(193, 199, 200, PrefixExpression {
-                                    operator: m.node(193, 195, PrefixOperator::Decrement),
-                                    operand: m.node(195, 199, "doge"),
-                                }),
-                                m.stmt_expr(221, 226, 227, PrefixExpression {
-                                    operator: m.node(221, 222, PrefixOperator::Plus),
-                                    operand: m.node(222, 226, "doge"),
-                                }),
-                                m.stmt_expr(248, 253, 254, PrefixExpression {
-                                    operator: m.node(248, 249, PrefixOperator::Minus),
-                                    operand: m.node(249, 253, "doge"),
-                                }),
-                            ]),
-                        }),
-                    }),
-                ]),
-            }),
-        ]);
+        "#,
+            [m.node(
+                14,
+                286,
+                ContractDefinition {
+                    name: m.node(23, 26, "Foo"),
+                    inherits: NodeList::empty(),
+                    body: m.list([m.node(
+                        45,
+                        272,
+                        FunctionDefinition {
+                            name: None,
+                            params: NodeList::empty(),
+                            visibility: None,
+                            mutability: None,
+                            modifiers: NodeList::empty(),
+                            returns: NodeList::empty(),
+                            block: m.node(
+                                56,
+                                272,
+                                Block {
+                                    body: m.list([
+                                        m.stmt_expr(
+                                            78,
+                                            83,
+                                            84,
+                                            PrefixExpression {
+                                                operator: m.node(
+                                                    78,
+                                                    79,
+                                                    PrefixOperator::LogicalNot,
+                                                ),
+                                                operand: m.node(79, 83, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            105,
+                                            110,
+                                            111,
+                                            PrefixExpression {
+                                                operator: m.node(105, 106, PrefixOperator::BitNot),
+                                                operand: m.node(106, 110, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            132,
+                                            143,
+                                            144,
+                                            PrefixExpression {
+                                                operator: m.node(132, 138, PrefixOperator::Delete),
+                                                operand: m.node(139, 143, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            165,
+                                            171,
+                                            172,
+                                            PrefixExpression {
+                                                operator: m.node(
+                                                    165,
+                                                    167,
+                                                    PrefixOperator::Increment,
+                                                ),
+                                                operand: m.node(167, 171, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            193,
+                                            199,
+                                            200,
+                                            PrefixExpression {
+                                                operator: m.node(
+                                                    193,
+                                                    195,
+                                                    PrefixOperator::Decrement,
+                                                ),
+                                                operand: m.node(195, 199, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            221,
+                                            226,
+                                            227,
+                                            PrefixExpression {
+                                                operator: m.node(221, 222, PrefixOperator::Plus),
+                                                operand: m.node(222, 226, "doge"),
+                                            },
+                                        ),
+                                        m.stmt_expr(
+                                            248,
+                                            253,
+                                            254,
+                                            PrefixExpression {
+                                                operator: m.node(248, 249, PrefixOperator::Minus),
+                                                operand: m.node(249, 253, "doge"),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        },
+                    )]),
+                },
+            )],
+        );
     }
 }

@@ -1,5 +1,5 @@
-extern crate lunarity_ast as ast;
-extern crate lunarity_lexer as lexer;
+extern crate optimizoor_ast as ast;
+extern crate optimizoor_lexer as lexer;
 extern crate toolshed;
 
 #[cfg(test)]
@@ -267,7 +267,7 @@ mod test {
 
     #[test]
     fn can_parse_second_price_auction() {
-        let source = include_str!("../../lunarity/benches/struct_packing.sol");
+        let source = include_str!("../../examples/unoptimized_contracts/struct_packing.sol");
 
         let ast = parse(source).unwrap();
 

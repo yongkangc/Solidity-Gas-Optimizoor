@@ -614,8 +614,7 @@ mod test {
 
     #[test]
     fn second_price_auction() {
-        let source = include_str!("../../lunarity/benches/second-price-auction.sol");
-
+        let source = include_str!("../../examples/second-price-auction.sol");
         let mut lex = Token::lexer(source);
         let mut tokens = 0;
 

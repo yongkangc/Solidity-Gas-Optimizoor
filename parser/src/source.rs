@@ -1,21 +1,13 @@
 use toolshed::list::ListBuilder;
 
+use crate::Parser;
 use ast::*;
 use lexer::Token;
-use Parser;
 
 impl<'ast> Parser<'ast> {
+    // Parses the whole file
     pub fn source_unit(&mut self) -> Option<SourceUnitNode<'ast>> {
         match self.lexer.token {
-            // Token::BracketClose => {
-            //     println!("BRACKET CLOSE");
-            //     None
-            // }
-            // Token::BracketOpen => {
-            //     self.lexer.advance();
-            //     println!("{:?} TOKEN", self.lexer.token);
-            //     None
-            // }
             Token::KeywordPragma => self.pragma_directive(),
             Token::KeywordImport => self.import_directive(),
             Token::DeclarationContract => self.contract_definition(), // issue lies here + State Variable Declaration
@@ -126,7 +118,7 @@ impl<'ast> Parser<'ast> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use mock::{assert_units, Mock};
+    use crate::mock::{assert_units, Mock};
 
     #[test]
     fn pragma() {

@@ -1,10 +1,14 @@
+use crate::Parser;
 use ast::*;
-use Parser;
 use lexer::Token;
 
 pub trait TypeNameContext<'ast> {
-    fn parse(&mut Parser<'ast>) -> Option<TypeNameNode<'ast>>;
+    fn parse(parser: &mut Parser<'ast>) -> Option<TypeNameNode<'ast>>;
 }
+
+// pub trait TypeNameContext<'ast> {
+//     fn parse(&mut self, parser: &mut Parser<'ast>) -> Option<TypeNameNode<'ast>>;
+// }
 
 pub struct RegularTypeNameContext;
 pub struct StatementTypeNameContext;
@@ -13,18 +17,17 @@ impl<'ast> TypeNameContext<'ast> for RegularTypeNameContext {
     fn parse(par: &mut Parser<'ast>) -> Option<TypeNameNode<'ast>> {
         match par.lexer.token {
             Token::KeywordMapping => par.mapping(),
-            Token::Identifier     => par.user_defined_type(),
-            _                     => par.elementary_type_name(),
+            Token::Identifier => par.user_defined_type(),
+            _ => par.elementary_type_name(),
         }
     }
 }
-
 
 impl<'ast> TypeNameContext<'ast> for StatementTypeNameContext {
     fn parse(par: &mut Parser<'ast>) -> Option<TypeNameNode<'ast>> {
         match par.lexer.token {
             Token::KeywordMapping => par.mapping(),
-            _                     => par.elementary_type_name(),
+            _ => par.elementary_type_name(),
         }
     }
 }
@@ -46,16 +49,16 @@ impl<'ast> Parser<'ast> {
             let ref size = self.lexer.extras;
 
             match self.lexer.token {
-                Token::TypeBool       => ElementaryTypeName::Bool,
-                Token::TypeAddress    => ElementaryTypeName::Address,
-                Token::TypeString     => ElementaryTypeName::String,
-                Token::TypeByte       => ElementaryTypeName::Byte(size.0),
-                Token::TypeBytes      => ElementaryTypeName::Bytes,
-                Token::TypeInt        => ElementaryTypeName::Int(size.0),
-                Token::TypeUint       => ElementaryTypeName::Uint(size.0),
-                Token::TypeFixed      => ElementaryTypeName::Fixed(size.0, size.1),
-                Token::TypeUfixed     => ElementaryTypeName::Ufixed(size.0, size.1),
-                _                     => return None,
+                Token::TypeBool => ElementaryTypeName::Bool,
+                Token::TypeAddress => ElementaryTypeName::Address,
+                Token::TypeString => ElementaryTypeName::String,
+                Token::TypeByte => ElementaryTypeName::Byte(size.0),
+                Token::TypeBytes => ElementaryTypeName::Bytes,
+                Token::TypeInt => ElementaryTypeName::Int(size.0),
+                Token::TypeUint => ElementaryTypeName::Uint(size.0),
+                Token::TypeFixed => ElementaryTypeName::Fixed(size.0, size.1),
+                Token::TypeUfixed => ElementaryTypeName::Ufixed(size.0, size.1),
+                _ => return None,
             }
         };
 
@@ -70,17 +73,21 @@ impl<'ast> Parser<'ast> {
 
         let location = match self.lexer.token {
             Token::KeywordStorage => self.node_at_token(StorageLocation::Storage),
-            Token::KeywordMemory  => self.node_at_token(StorageLocation::Memory),
-            _                     => None,
+            Token::KeywordMemory => self.node_at_token(StorageLocation::Memory),
+            _ => None,
         };
 
         let id = self.expect_str_node(Token::Identifier);
 
-        self.node_at(type_name.start, id.end, VariableDeclaration {
-            type_name,
-            location,
-            id,
-        })
+        self.node_at(
+            type_name.start,
+            id.end,
+            VariableDeclaration {
+                type_name,
+                location,
+                id,
+            },
+        )
     }
 
     fn user_defined_type(&mut self) -> Option<TypeNameNode<'ast>> {
@@ -101,12 +108,9 @@ impl<'ast> Parser<'ast> {
 
         self.expect(Token::Arrow);
 
-        let to  = expect!(self, self.type_name::<RegularTypeNameContext>());
+        let to = expect!(self, self.type_name::<RegularTypeNameContext>());
         let end = self.expect_end(Token::ParenClose);
 
-        self.node_at(start, end, Mapping {
-            from,
-            to,
-        })
+        self.node_at(start, end, Mapping { from, to })
     }
 }

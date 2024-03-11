@@ -1,16 +1,18 @@
-use toolshed::Arena;
 use toolshed::list::List;
+use toolshed::Arena;
 
 use ast::*;
 
+use crate::parse;
+
 pub struct Mock {
-    arena: Arena
+    arena: Arena,
 }
 
 impl Mock {
     pub fn new() -> Self {
         Mock {
-            arena: Arena::new()
+            arena: Arena::new(),
         }
     }
 
@@ -31,10 +33,15 @@ impl Mock {
     {
         let expression = Node::new(self.arena.alloc(NodeInner::new(start, e_end, val.into())));
 
-        Node::new(self.arena.alloc(NodeInner::new(start, s_end, expression.into()))).into()
+        Node::new(
+            self.arena
+                .alloc(NodeInner::new(start, s_end, expression.into())),
+        )
+        .into()
     }
 
-    pub fn list<'mock, T, L>(&'mock self, list: L) -> List<T> where
+    pub fn list<'mock, T, L>(&'mock self, list: L) -> List<T>
+    where
         T: 'mock + Copy,
         L: AsRef<[T]>,
     {
@@ -42,19 +49,13 @@ impl Mock {
     }
 }
 
-
 pub fn assert_units<'mock, E>(source: &str, expected: E)
 where
-    E: AsRef<[SourceUnitNode<'mock>]>
+    E: AsRef<[SourceUnitNode<'mock>]>,
 {
-    use parse;
-
     let program = parse(source).unwrap();
 
-    let iter = program
-                .body()
-                .iter()
-                .zip(expected.as_ref().iter());
+    let iter = program.body().iter().zip(expected.as_ref().iter());
 
     for (got, expected) in iter {
         assert_eq!(got, expected);

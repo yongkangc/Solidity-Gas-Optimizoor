@@ -39,12 +39,11 @@ pub enum Token {
     #[end]
     EndOfProgram,
 
-    #[regex = r"\s+"]
-    Whitespace,
+    // #[regex = r"\s+"]
+    // Whitespace,
 
-    #[token = "\n"]
-    Newline,
-
+    // #[token = "\n"]
+    // Newline,
     #[token = ";"]
     Semicolon,
 

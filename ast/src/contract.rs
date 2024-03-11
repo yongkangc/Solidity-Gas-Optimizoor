@@ -1,4 +1,7 @@
-use {*};
+use crate::{
+    BlockNode, ExpressionNode, Flag, FlagNode, FunctionDefinition, IdentifierList, IdentifierNode,
+    Node, NodeList, ParameterList, TypeNameNode, VariableDeclarationList,
+};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ContractDefinition<'ast> {

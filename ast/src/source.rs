@@ -1,6 +1,6 @@
-use {*};
+use crate::{ContractDefinition, IdentifierNode, Node, NodeList, StringLiteral};
 
-/// A `SourceUnit` is the top level construct of the grammar.
+/// A `SourceUnit` is the top level construct of the grammar. It represents a single solidity file.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SourceUnit<'ast> {
     PragmaDirective(PragmaDirective<'ast>),

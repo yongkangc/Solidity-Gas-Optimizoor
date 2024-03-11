@@ -10,6 +10,8 @@ Overall Architecture:
 
 ![Architecture](image-2.png)
 
+- Each component is designed as a rust library. The main program is in `cli` which will be the main entrypoint that performs these optimisations.
+
 ### Lexer
 
 Functionality:

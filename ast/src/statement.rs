@@ -1,7 +1,5 @@
 use toolshed::list::List;
 
-use {*};
-
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Statement<'ast> {
     /// Only available in modifiers
@@ -86,7 +84,9 @@ pub struct InferredDefinitionStatement<'ast> {
     pub init: ExpressionNode<'ast>,
 }
 
-pub use self::Statement::{Placeholder, BreakStatement, ContinueStatement, ThrowStatement};
+use crate::{ExpressionNode, IdentifierNode, InlineAssemblyBlockNode, Node, NodeList, StringLiteralNode, VariableDeclarationNode};
+
+pub use self::Statement::{BreakStatement, ContinueStatement, Placeholder, ThrowStatement};
 
 pub type StatementNode<'ast> = Node<'ast, Statement<'ast>>;
 pub type StatementList<'ast> = NodeList<'ast, Statement<'ast>>;

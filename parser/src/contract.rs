@@ -1,8 +1,8 @@
 use toolshed::list::{GrowableList, ListBuilder};
 
+use crate::{ModifierContext, Parser, RegularTypeNameContext, TOP};
 use ast::*;
 use lexer::Token;
-use {ModifierContext, Parser, RegularTypeNameContext, TOP};
 
 impl<'ast> Parser<'ast> {
     pub fn contract_definition(&mut self) -> Option<SourceUnitNode<'ast>> {
@@ -276,6 +276,8 @@ impl<'ast> Parser<'ast> {
 
 #[cfg(test)]
 mod test {
+    use crate::mock;
+
     use super::*;
     use mock::{assert_units, Mock};
 

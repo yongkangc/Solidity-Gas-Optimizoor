@@ -1,7 +1,7 @@
 use toolshed::list::GrowableList;
 
+use crate::Parser;
 use ast::*;
-use Parser;
 use lexer::Token;
 
 impl<'ast> Parser<'ast> {
@@ -18,16 +18,20 @@ impl<'ast> Parser<'ast> {
 
         let end = self.expect_end(Token::BraceClose);
 
-        self.node_at(start, end, InlineAssemblyBlock {
-            items: items.as_list()
-        })
+        self.node_at(
+            start,
+            end,
+            InlineAssemblyBlock {
+                items: items.as_list(),
+            },
+        )
     }
 
     fn assembly_item(&mut self) -> Option<AssemblyItemNode<'ast>> {
         match self.lexer.token {
-            Token::BraceOpen  => self.inline_assembly_block(),
+            Token::BraceOpen => self.inline_assembly_block(),
             Token::Identifier => self.assembly_identifier(),
-            _                 => None,
+            _ => None,
         }
     }
 
@@ -38,13 +42,10 @@ impl<'ast> Parser<'ast> {
         self.lexer.advance();
 
         if self.allow(Token::AssemblyBind) {
-            let id   = self.node_at(start, end, identifier);
+            let id = self.node_at(start, end, identifier);
             let init = expect!(self, self.functional_assembly_expression());
 
-            return self.node_at(start, init.end, AssemblyAssignment {
-                id,
-                init,
-            });
+            return self.node_at(start, init.end, AssemblyAssignment { id, init });
         }
 
         self.node_at(start, end, identifier)
@@ -63,9 +64,13 @@ impl<'ast> Parser<'ast> {
 
         let end = self.expect_end(Token::ParenClose);
 
-        self.node_at(id.start, end, FunctionalAssemblyExpression {
-            id,
-            arguments: arguments.as_list()
-        })
+        self.node_at(
+            id.start,
+            end,
+            FunctionalAssemblyExpression {
+                id,
+                arguments: arguments.as_list(),
+            },
+        )
     }
 }
