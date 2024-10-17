@@ -53,18 +53,3 @@ The goal of this project is to design and implement a Rust-based tool that analy
 - **Test suite** that covers various Solidity contracts and ensures the reliability of the optimization process.
 - **Benchmarking reports** that demonstrate the gas savings achieved by the tool on sample contracts.
 
-## Roadmap
-
-### Week 8:
-
-- [ ] Start on lexer and parser
-  - look at the optimisations u need to do and look at the tokens we neeed
-    - struct packing
-      - struct, parathesis, variable name, type identifier
-    - storage cache
-      - identifying read and write
-        - what can trigger a read / write
-      - function
-      - limit it to value types only
-        - start with integer
-          - we can start with value types (pass by value)
