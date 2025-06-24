@@ -39,9 +39,7 @@ The goal of this project is to design and implement a Rust-based tool that analy
 
 ---
 
-## Delivables of the project
-
-### Core Deliverables:
+## Core Features:
 
 - A **Rust-based CLI tool** that can be run on various operating systems.
 - **Source code analysis** and **optimization algorithms** that:
